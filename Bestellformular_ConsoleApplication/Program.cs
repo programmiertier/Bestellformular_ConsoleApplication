@@ -6,6 +6,7 @@ namespace Bestellformular_ConsoleApplication
 {
     class Program
     {
+        
         struct Bestellzeile
         {
             public string bezeichnung;
@@ -13,6 +14,7 @@ namespace Bestellformular_ConsoleApplication
             public int bestellmenge;
             public double zeilenpreis;
         };
+        static string hinweis = "Alle Preise netto, zzgl. USt.";    // muss static deklariert werden
         // zugriff Rückgabetyp name (parameter)
         static void Main(string[] args)
         {
@@ -23,7 +25,7 @@ namespace Bestellformular_ConsoleApplication
                   new Bestellzeile {bezeichnung ="Printer",einzelpreis=236.39,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Desktop",einzelpreis=986.99,bestellmenge=0,zeilenpreis=0.0 }
                 };
-            string hinweis = "Alle Preise netto, zzgl. USt.";
+            
             int oldCursorTop = 9;
             ConsoleKeyInfo meinKey;
             do
@@ -32,7 +34,7 @@ namespace Bestellformular_ConsoleApplication
                 int breiteBez = 7; int breiteEp = 7;
                 SetCursorPosition(startLeft, startTop);
                 Write("Bezeichnung\tE.Preis\tBestellmenge\tPreis");
-                ForegroundColor = Green;
+                ForegroundColor = Cyan;
                     double gesamtpreis = 0;
                 foreach (Bestellzeile zeile in bestellung)  // nimmt zeilenweise Daten
                 {
@@ -41,7 +43,7 @@ namespace Bestellformular_ConsoleApplication
                         // -7 von links, 7 breit
                     gesamtpreis += zeile.zeilenpreis;
                 }
-                hinweiseAusgeben();
+                hinweiseAusgeben(22, 22, Red); // Aufruf der Funktion
                 CursorSize = 10;
                 SetCursorPosition(startLeft, 18);
                 Write("Gesamtpreis: {0:F2}", gesamtpreis);
@@ -77,8 +79,25 @@ namespace Bestellformular_ConsoleApplication
             } while (meinKey.Key != ConsoleKey.Escape);
             ReadLine();
         }   // end of main
+        // funktion hier
+        static void hinweiseAusgeben()
+        {
+            Write("\tHinweis: ");
+        }
 
-        static void hinweiseAusgeben() {
-            WriteLine("Hinweis: "); }
+        static void hinweiseAusgeben(int links, int oben)
+        {   // Überladung
+            SetCursorPosition(links, oben);
+            Write("Hinweis: ");
+        }
+        static void hinweiseAusgeben(int links, int oben, ConsoleColor farbe)
+        {   // Überladung für Farbe und hinzufügen vom hinweis
+            ConsoleColor hilf = ForegroundColor;    // vorherige Farbe
+            ForegroundColor = farbe;
+            SetCursorPosition(links, oben);
+            Write("Hinweis: {0}", hinweis);
+            ForegroundColor = hilf;     // Aufruf vorheriger Farbe
+        }
+        
     } // end of Class Program
 }
