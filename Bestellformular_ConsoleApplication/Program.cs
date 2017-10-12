@@ -15,6 +15,7 @@ namespace Bestellformular_ConsoleApplication
             public double zeilenpreis;
         };
         static string hinweis = "Alle Preise netto, zzgl. USt.";    // muss static deklariert werden
+        public static object gesamtpreis { get; private set; }
         // zugriff Rückgabetyp name (parameter)
         static void Main(string[] args)
         {
@@ -41,12 +42,17 @@ namespace Bestellformular_ConsoleApplication
                     SetCursorPosition(4, ++CursorTop); ;
                     Write("{0,-7}\t{1,7:F2}\t{2,6:D}\t{3,13:F2}", zeile.bezeichnung, zeile.einzelpreis, zeile.bestellmenge, zeile.zeilenpreis);
                         // -7 von links, 7 breit
-                    gesamtpreis += zeile.zeilenpreis;
+                    gesamtpreis += zeile.zeilenpreis; 
                 }
                 hinweiseAusgeben(22, 22, Red); // Aufruf der Funktion
                 CursorSize = 10;
                 SetCursorPosition(startLeft, 18);
                 Write("Gesamtpreis: {0:F2}", gesamtpreis);
+                SetCursorPosition(startLeft, CursorTop + 1);
+                // steuerBerechnen hier ausgeben:
+                
+                steuerBerechnen(gesamtpreis, 19);
+                //hinweiseAusgeben(steuerBerechnen(gesamtpreis));
                 SetCursorPosition(breiteBez + 8 + breiteEp + 8, oldCursorTop);
                 meinKey = Console.ReadKey(true);
                 if (!Char.IsNumber(meinKey.KeyChar))
@@ -84,7 +90,6 @@ namespace Bestellformular_ConsoleApplication
         {
             Write("\tHinweis: ");
         }
-
         static void hinweiseAusgeben(int links, int oben)
         {   // Überladung
             SetCursorPosition(links, oben);
@@ -98,6 +103,10 @@ namespace Bestellformular_ConsoleApplication
             Write("Hinweis: {0}", hinweis);
             ForegroundColor = hilf;     // Aufruf vorheriger Farbe
         }
-        
+        static double steuerBerechnen(double netto, double ustSatz)
+        {
+            Write("\t {0} % werden berechnet", ustSatz);
+            return netto * (ustSatz / 100);
+        }
     } // end of Class Program
 }
