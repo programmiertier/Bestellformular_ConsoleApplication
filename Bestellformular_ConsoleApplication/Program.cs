@@ -13,7 +13,7 @@ namespace Bestellformular_ConsoleApplication
             public int bestellmenge;
             public double zeilenpreis;
         };
-
+        // zugriff Rückgabetyp name (parameter)
         static void Main(string[] args)
         {
             Bestellzeile[] bestellung = new Bestellzeile[]
@@ -38,9 +38,10 @@ namespace Bestellformular_ConsoleApplication
                 {
                     SetCursorPosition(4, ++CursorTop); ;
                     Write("{0,-7}\t{1,7:F2}\t{2,6:D}\t{3,13:F2}", zeile.bezeichnung, zeile.einzelpreis, zeile.bestellmenge, zeile.zeilenpreis);
+                        // -7 von links, 7 breit
                     gesamtpreis += zeile.zeilenpreis;
                 }
-                // hinweiseAusgeben();
+                hinweiseAusgeben();
                 CursorSize = 10;
                 SetCursorPosition(startLeft, 18);
                 Write("Gesamtpreis: {0:F2}", gesamtpreis);
@@ -76,6 +77,8 @@ namespace Bestellformular_ConsoleApplication
             } while (meinKey.Key != ConsoleKey.Escape);
             ReadLine();
         }   // end of main
-        private static void myFunc() {; }
-    }
+
+        static void hinweiseAusgeben() {
+            WriteLine("Hinweis: "); }
+    } // end of Class Program
 }
