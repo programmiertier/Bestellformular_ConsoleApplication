@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static System.Console;
 using static System.ConsoleColor;
 
@@ -6,7 +7,6 @@ namespace Bestellformular_ConsoleApplication
 {
     class Program
     {
-        
         struct Bestellzeile
         {
             public string bezeichnung;
@@ -17,12 +17,18 @@ namespace Bestellformular_ConsoleApplication
         static string hinweis = "Alle Preise netto, zzgl. USt.";    // muss static deklariert werden
         public static object gesamtpreis { get; private set; }
         static double mwst; // hier wird die mwst angegeben
-        
         // zugriff Rückgabetyp name (parameter)
         static void Main(string[] args)
         {
+            Dictionary<string, double> saetze =
+            new Dictionary<string, double>();
+            saetze.Add("D7", 0.07);
+            saetze.Add("D19", 0.19);
+            saetze.Add("GB", 0.15);
+            saetze.Add("SW", 0.25);
+
             Bestellzeile[] bestellung = new Bestellzeile[]
-                { new Bestellzeile {bezeichnung ="Kaffee " ,einzelpreis=100.00,bestellmenge=0,zeilenpreis=0.0 },
+                { new Bestellzeile {bezeichnung ="Kaffee " ,einzelpreis=13.00,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Tee " ,einzelpreis=3.20,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Phone " ,einzelpreis= 87.99,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Printer",einzelpreis=236.39,bestellmenge=0,zeilenpreis=0.0 },
@@ -36,7 +42,7 @@ namespace Bestellformular_ConsoleApplication
                 int breiteBez = 7; int breiteEp = 7;
                 SetCursorPosition(startLeft, startTop);
                 Write("Bezeichnung\tE.Preis\tBestellmenge\tPreis");
-                ForegroundColor = Cyan;
+                ForegroundColor = DarkCyan;
                     double gesamtpreis = 0;
                 foreach (Bestellzeile zeile in bestellung)  // nimmt zeilenweise Daten
                 {
@@ -50,13 +56,12 @@ namespace Bestellformular_ConsoleApplication
                 SetCursorPosition(startLeft, 18);
                 Write("Gesamtpreis:\t{0:F2}", gesamtpreis);
                 steuerBerechnen(gesamtpreis, 0.19);
+                // steuerBerechnen hier ausgeben:
                 SetCursorPosition(startLeft, CursorTop + 1);
                 Write("Ust beträgt:\t{0:F2}", mwst);
-                
-                // steuerBerechnen hier ausgeben:
-                
-                
-                //hinweiseAusgeben(steuerBerechnen(gesamtpreis));
+                SetCursorPosition(startLeft, CursorTop + 3);
+                steuern(saetze);
+
                 SetCursorPosition(breiteBez + 8 + breiteEp + 8, oldCursorTop);
                 meinKey = Console.ReadKey(true);
                 if (!Char.IsNumber(meinKey.KeyChar))
@@ -115,6 +120,26 @@ namespace Bestellformular_ConsoleApplication
         {   // 19% Steuersatz
             return steuerBerechnen(netto, 19.0);
         }
-        
+
+        static double steuern(Dictionary<string,double> land)
+        {
+            double value;
+            foreach(KeyValuePair<string, double> satz in land)
+            {
+                Write("\n\tDas Land {0} hat einen Umsatzsteuersatz von {1}",
+                    satz.Key, satz.Value);
+            }
+            Write("\n\tBitte wählen Sie ihr Zielland aus: ");
+            string country = ReadLine();
+            if (land.TryGetValue(country, out value))
+            {
+                return value;
+            }
+            else
+            {
+                WriteLine("Land nicht gefunden");
+            }
+            return 19;
+        }
     } // end of Class Program
 }
