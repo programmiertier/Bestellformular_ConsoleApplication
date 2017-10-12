@@ -16,17 +16,18 @@ namespace Bestellformular_ConsoleApplication
         };
         static string hinweis = "Alle Preise netto, zzgl. USt.";    // muss static deklariert werden
         public static object gesamtpreis { get; private set; }
+        static double mwst; // hier wird die mwst angegeben
+        
         // zugriff Rückgabetyp name (parameter)
         static void Main(string[] args)
         {
             Bestellzeile[] bestellung = new Bestellzeile[]
-                { new Bestellzeile {bezeichnung ="Kaffee " ,einzelpreis=13.00,bestellmenge=0,zeilenpreis=0.0 },
+                { new Bestellzeile {bezeichnung ="Kaffee " ,einzelpreis=100.00,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Tee " ,einzelpreis=3.20,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Phone " ,einzelpreis= 87.99,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Printer",einzelpreis=236.39,bestellmenge=0,zeilenpreis=0.0 },
                   new Bestellzeile {bezeichnung ="Desktop",einzelpreis=986.99,bestellmenge=0,zeilenpreis=0.0 }
                 };
-            
             int oldCursorTop = 9;
             ConsoleKeyInfo meinKey;
             do
@@ -47,11 +48,14 @@ namespace Bestellformular_ConsoleApplication
                 hinweiseAusgeben(22, 22, Red); // Aufruf der Funktion
                 CursorSize = 10;
                 SetCursorPosition(startLeft, 18);
-                Write("Gesamtpreis: {0:F2}", gesamtpreis);
+                Write("Gesamtpreis:\t{0:F2}", gesamtpreis);
+                steuerBerechnen(gesamtpreis, 0.19);
                 SetCursorPosition(startLeft, CursorTop + 1);
+                Write("Ust beträgt:\t{0:F2}", mwst);
+                
                 // steuerBerechnen hier ausgeben:
                 
-                steuerBerechnen(gesamtpreis, 19);
+                
                 //hinweiseAusgeben(steuerBerechnen(gesamtpreis));
                 SetCursorPosition(breiteBez + 8 + breiteEp + 8, oldCursorTop);
                 meinKey = Console.ReadKey(true);
@@ -105,8 +109,12 @@ namespace Bestellformular_ConsoleApplication
         }
         static double steuerBerechnen(double netto, double ustSatz)
         {
-            Write("\t {0} % werden berechnet", ustSatz);
-            return netto * (ustSatz / 100);
+            return mwst = netto * ustSatz;
         }
+        static double steuerBerechnen(double netto)
+        {   // 19% Steuersatz
+            return steuerBerechnen(netto, 19.0);
+        }
+        
     } // end of Class Program
 }
